@@ -7,3 +7,6 @@ target/
 .idea/
 .vscode/
 *.log
+AGENT.md
+AGENTS.md
+RESUME_EVIDENCE.md
