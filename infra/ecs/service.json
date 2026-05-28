@@ -1,0 +1,21 @@
+{
+  "cluster": "doctor-recommendation",
+  "serviceName": "doctor-recommendation-web",
+  "taskDefinition": "doctor-recommendation",
+  "desiredCount": 2,
+  "launchType": "FARGATE",
+  "networkConfiguration": {
+    "awsvpcConfiguration": {
+      "subnets": ["subnet-REPLACE_ME_A", "subnet-REPLACE_ME_B"],
+      "securityGroups": ["sg-REPLACE_ME"],
+      "assignPublicIp": "ENABLED"
+    }
+  },
+  "loadBalancers": [
+    {
+      "targetGroupArn": "arn:aws:elasticloadbalancing:<REGION>:<ACCOUNT_ID>:targetgroup/doctor-recommendation/REPLACE_ME",
+      "containerName": "frontend",
+      "containerPort": 80
+    }
+  ]
+}

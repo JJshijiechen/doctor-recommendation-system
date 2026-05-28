@@ -1,0 +1,56 @@
+{
+  "family": "doctor-recommendation",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/doctorRecommendationTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "backend",
+      "image": "<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/doctor-recommendation-backend:latest",
+      "essential": true,
+      "portMappings": [{ "containerPort": 8080, "protocol": "tcp" }],
+      "environment": [
+        { "name": "REDIS_HOST", "value": "<ELASTICACHE_ENDPOINT>" },
+        { "name": "REDIS_PORT", "value": "6379" },
+        { "name": "RECOMMENDATION_CACHE_TTL_MINUTES", "value": "30" },
+        { "name": "PROVIDER_LOOKUP_CACHE_TTL_MINUTES", "value": "1440" },
+        { "name": "LOCATION_SEARCH_CACHE_TTL_MINUTES", "value": "1440" },
+        { "name": "SECURITY_ENABLED", "value": "true" },
+        { "name": "CORS_ALLOWED_ORIGINS", "value": "https://<APP_DOMAIN>" }
+      ],
+      "secrets": [
+        { "name": "SPRING_DATASOURCE_URL", "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/doctor-recommendation/db-url" },
+        { "name": "SPRING_DATASOURCE_USERNAME", "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/doctor-recommendation/db-user" },
+        { "name": "SPRING_DATASOURCE_PASSWORD", "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/doctor-recommendation/db-password" },
+        { "name": "OPENAI_API_KEY", "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/doctor-recommendation/openai-api-key" },
+        { "name": "GOOGLE_PLACES_API_KEY", "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/doctor-recommendation/google-places-api-key" },
+        { "name": "SERPAPI_API_KEY", "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/doctor-recommendation/serpapi-api-key" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/doctor-recommendation",
+          "awslogs-region": "<REGION>",
+          "awslogs-stream-prefix": "backend"
+        }
+      }
+    },
+    {
+      "name": "frontend",
+      "image": "<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/doctor-recommendation-frontend:latest",
+      "essential": true,
+      "portMappings": [{ "containerPort": 80, "protocol": "tcp" }],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/doctor-recommendation",
+          "awslogs-region": "<REGION>",
+          "awslogs-stream-prefix": "frontend"
+        }
+      }
+    }
+  ]
+}

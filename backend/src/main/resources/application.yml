@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: doctor-recommendation-backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/doctor_recommendation?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:doctor}
+    password: ${SPRING_DATASOURCE_PASSWORD:doctor}
+  jpa:
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 2s
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${GOOGLE_ISSUER_URI:https://accounts.google.com}
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000}
+  security:
+    enabled: ${SECURITY_ENABLED:false}
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    model: ${OPENAI_MODEL:gpt-4.1-mini}
+  google:
+    places-api-key: ${GOOGLE_PLACES_API_KEY:}
+  serpapi:
+    api-key: ${SERPAPI_API_KEY:}
+  cache:
+    recommendation-ttl-minutes: ${RECOMMENDATION_CACHE_TTL_MINUTES:30}
+    provider-lookup-ttl-minutes: ${PROVIDER_LOOKUP_CACHE_TTL_MINUTES:1440}
+    location-search-ttl-minutes: ${LOCATION_SEARCH_CACHE_TTL_MINUTES:1440}
