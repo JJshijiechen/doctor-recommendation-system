@@ -157,9 +157,3 @@ EKS:
 2. Copy `infra/eks/secrets.template.yaml`, replace secret values, and apply it.
 3. Replace image, domain, RDS, and ElastiCache placeholders in the EKS manifests.
 4. Apply backend, frontend, and ingress manifests.
-
-## Metrics Claims
-
-The code supports measuring repeat lookup latency through Redis cache hits and recommendation history. Provider lookup cache counters are exposed through Actuator metrics as `doctor.provider.lookup.cache.hits`, `doctor.provider.lookup.cache.misses`, `doctor.provider.lookup.cache.writes`, and `doctor.provider.lookup.cache.errors`. Do not hard-code resume metrics such as "100+ users", "20% accuracy increase", or "35% latency reduction"; validate them with user testing, matched-care review, and latency measurements before publishing.
-
-See `RESUME_EVIDENCE.md` for a claim-by-claim checklist of completed, deploy-ready, and still-needs-real-data items.
